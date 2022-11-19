@@ -47,5 +47,5 @@ def csv_data(csv : str) -> None :
 
 
 if __name__ == '__main__' :
-    csv_exemple_ligne('blocks_202210.csv')
-    csv_data('blocks_202210.csv')
+    csv_exemple_ligne('transactions_202210.csv')
+    csv_data('transactions_202210.csv')
