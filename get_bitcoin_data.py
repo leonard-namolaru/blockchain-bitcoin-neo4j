@@ -30,10 +30,6 @@ def estimate_gigabytes_scanned(query : str, big_query_client : bigquery.client.C
     
     return estimate # Cette requête traitera {estimate} Go (Go = GB)
 
-project = 'bigquery-public-data'
-dataset = 'crypto_bitcoin'
-table = 'transactions'
-
 # Description de l'API : https://cloud.google.com/python/docs/reference/bigquery/latest/google.cloud.bigquery.client.Client
 client = bigquery.Client()
 
@@ -43,6 +39,7 @@ query = """
     WHERE
         EXTRACT(YEAR FROM block_timestamp) = 2022 AND
         EXTRACT(MONTH FROM block_timestamp) = 10 
+        ORDER BY `hash`
     LIMIT 10000   
     """
 
@@ -65,3 +62,34 @@ print(f"Temps ecoule : {duration:.2f} minutes")
 print( df.head() )
 df.to_csv('transactions_202210.csv', index=False)
 
+
+query = """
+    SELECT *
+    FROM `bigquery-public-data.crypto_bitcoin.blocks`
+    WHERE
+        `hash` IN (SELECT block_hash
+                 FROM `bigquery-public-data.crypto_bitcoin.transactions`
+                 WHERE
+                 EXTRACT(YEAR FROM block_timestamp) = 2022 AND
+                 EXTRACT(MONTH FROM block_timestamp) = 10 
+                 ORDER BY `hash`
+                 LIMIT 10000)
+    """
+
+estimate = estimate_gigabytes_scanned(query, client)
+print(f"Cette requete traitera {estimate} GBs.")
+
+bytes_in_gigabytes = 2**30
+
+safe_config = bigquery.QueryJobConfig( maximum_bytes_billed= int(estimate + 10) * bytes_in_gigabytes )
+
+query_job = client.query(query, job_config=safe_config)
+start = time()
+result = query_job.result()
+df = result.to_dataframe()
+duration = (time() - start) / 60
+
+print(f"Temps ecoule : {duration:.2f} minutes")
+
+print( df.head() )
+df.to_csv('blocks_202210.csv', index=False)
