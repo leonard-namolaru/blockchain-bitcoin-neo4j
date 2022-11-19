@@ -41,11 +41,11 @@ def csv_data(csv : str) -> None :
 
     donnees = read_csv(csv)
 
-    for nom_colonne in noms_colonnes[0:len(noms_colonnes) - 2] :
+    for nom_colonne in noms_colonnes[0:len(noms_colonnes)] :
         print( donnees.groupby([nom_colonne]).size() )
         print("\n")
 
 
 if __name__ == '__main__' :
-    csv_exemple_ligne('transactions_202210.csv')
-    csv_data('transactions_202210.csv')
+    csv_exemple_ligne('blocks_202210.csv')
+    csv_data('blocks_202210.csv')
