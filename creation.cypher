@@ -1,3 +1,4 @@
+// Added 7214 labels, created 7214 nodes, set 43284 properties, created 3607 relationships, completed after 1006 ms.
 LOAD CSV WITH HEADERS FROM "file:/blocks_202210.csv" AS blocks_csv
 CREATE (block:Block{ hash: blocks_csv.hash,
                             size:toInteger(blocks_csv.size), 
@@ -13,6 +14,7 @@ CREATE (block:Block{ hash: blocks_csv.hash,
                             transaction_count:toInteger(blocks_csv.transaction_count)
                           })-[:coinbase]->(coinbase:Coinbase{value: blocks_csv.coinbase_param})
 
+// Added 10000 labels, created 10000 nodes, set 149993 properties, created 10000 relationships, completed after 20832 ms.
 LOAD CSV WITH HEADERS FROM "file:/transactions_202210.csv" as transactions_csv
 MERGE (block:Block {hash:transactions_csv.block_hash})
 CREATE (transaction:Transaction {  hash: transactions_csv.hash,
@@ -34,53 +36,33 @@ CREATE (transaction:Transaction {  hash: transactions_csv.hash,
                               )
 CREATE (transaction)-[:inc]->(block)  
 
+// Added 29589 labels, created 29589 nodes, set 178318 properties, created 29589 relationships, completed after 401933 ms.
+LOAD CSV WITH HEADERS FROM "file:/inputs_202210.csv" as inputs_csv
+MERGE (transaction:Transaction {hash: inputs_csv.transaction_hash})
+CREATE (input :Input {index: toInteger(inputs_csv.index),
+                         spent_transaction_hash: inputs_csv.spent_transaction_hash,   
+                          sent_output_index: toInteger(inputs_csv.sent_output_index),         
+                          required_signatures: toInteger(inputs_csv.required_signatures),         
+                          type: inputs_csv.type,         
+                          value: toFloat(inputs_csv.value)        
+                        }
+                      ) 
+CREATE (input)-[:in {script_asm: inputs_csv.script_asm, script_hex: inputs_csv.script_hex, sequence: toInteger(inputs_csv.sequence)}]->(transaction)
 
-// APOC Full installation : https://neo4j.com/labs/apoc/4.1/installation/
-//LOAD CSV WITH HEADERS FROM "file:/transactions_202210.csv" as transactions_csv
-//MERGE (transaction:Transaction {hash: transactions_csv.hash})
-
-//WITH apoc.convert.toList(transactions_csv.inputs ) AS inputs
-//FOREACH (input_csv in inputs |
-//         CREATE (input :Input {index: toInteger(apoc.convert.toMap(input_csv).index),
-//                          spent_transaction_hash: apoc.convert.toMap(input_csv).spent_transaction_hash,   
-//                          sent_output_index: toInteger(apoc.convert.toMap(input_csv).sent_output_index),         
-//                          required_signatures: toInteger(apoc.convert.toMap(input_csv).required_signatures),         
-//                          type: apoc.convert.toMap(input_csv).type,         
-//                          value: toFloat(apoc.convert.toMap(input_csv).value)        
-//                         }
-//                        ) 
-//
-//         CREATE (input)-[:in {script_asm: apoc.convert.toMap(input_csv).script_asm, script_hex: apoc.convert.toMap(input_csv).script_hex, sequence: toInteger(apoc.convert.toMap(input_csv).sequence)}]->(transaction)
-//         )
-
-// APOC Full installation : https://neo4j.com/labs/apoc/4.1/installation/
-//LOAD CSV WITH HEADERS FROM "file:/transactions_202210.csv" as transactions_csv
-//MERGE (transaction:Transaction {hash: transactions_csv.hash})
-
-//WITH apoc.convert.toList( apoc.convert.toJson(transactions_csv.outputs) ) AS outputs
-//FOREACH (output_csv in outputs |
-//         CREATE (output :Output {index: toInteger(apoc.convert.toMap(output_csv).index), required_signatures: toInteger(apoc.convert.toMap(output_csv).required_signatures), type: apoc.convert.toMap(output_csv).type})
-//         CREATE (transaction)-[:out]->(output)
-//         SET
-//             output.value= toFloat(apoc.convert.toMap(output_csv).value),
-//             output.script_asm= apoc.convert.toMap(output_csv).script_asm,
-//             output.script_hex= apoc.convert.toMap(output_csv).script_hex
-//         FOREACH(ignoreMe IN CASE WHEN apoc.convert.toMap(output_csv).addresses <> '' THEN [1] ELSE [] END |
-//                 CREATE (address :Address {address: apoc.convert.toMap(output_csv).addresses})
-//                 CREATE (output)-[:locked]->(address)
-//                )
-//        )
-
-// APOC Full installation : https://neo4j.com/labs/apoc/4.1/installation/
-//LOAD CSV WITH HEADERS FROM "file:/transactions_202210.csv" as transactions_csv
-//MERGE (transaction:Transaction {hash: transactions_csv.hash})
-
-//WITH apoc.convert.toList( apoc.convert.toJson(transactions_csv.outputs) ) AS outputs
-//FOREACH (output_csv in outputs |
-//         MERGE (output :Output {index: toInteger(apoc.convert.toMap(output_csv).index)})
-//         FOREACH(address_csv IN apoc.convert.toMap(output_csv).addresses |
-//                 CREATE (address :Address {address: address_csv})
-//                 CREATE (output)-[:locked]->(address)
-//                )
-//        )
-
+// Added 64062 labels, created 64062 nodes, set 192186 properties, created 64062 relationships, completed after 354477 ms.
+LOAD CSV WITH HEADERS FROM "file:/outputs_202210.csv" as outputs_csv
+MERGE (transaction:Transaction {hash: outputs_csv.transaction_hash})
+CREATE (output :Output {index: toInteger(outputs_csv.index), 
+                        required_signatures: toInteger(outputs_csv.required_signatures), 
+                        type: outputs_csv.type,
+                        value: toFloat(outputs_csv.value),
+                        script_asm: outputs_csv.script_asm,
+                        script_hex: outputs_csv.script_hex
+                       }
+                      )
+CREATE (transaction)-[:out]->(output)
+// Les outputs apparaissent sous le format ['yyyxx'], c'est-à-dire sous un format de tableau, 
+// bien qu'au moins dans notre jeu de données il n'y ait qu'une seule valeur dans le tableau,
+// nous utilisons donc la fonction split(original, splitDelimiter) pour extraire l'adresse elle-même du tableau
+CREATE (address :Address {address: split(outputs_csv.addresses, "'")[1]}) 
+CREATE (output)-[:locked]->(address)
