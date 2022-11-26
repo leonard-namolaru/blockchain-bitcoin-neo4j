@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*- 
-# Source : https://www.kaggle.com/code/nocibambi/getting-started-with-bitcoin-data
+# Un article qui nous a ete tres utile dans le cadre de la redaction de ce code : https://www.kaggle.com/code/nocibambi/getting-started-with-bitcoin-data
+# (tout en apportant des modifications et des ajustements selon les besoins de notre projet)
 
 from google.cloud import bigquery # pip install google-cloud-bigquery
 import pandas as pd
@@ -30,66 +31,65 @@ def estimate_gigabytes_scanned(query : str, big_query_client : bigquery.client.C
     
     return estimate # Cette requête traitera {estimate} Go (Go = GB)
 
-# Description de l'API : https://cloud.google.com/python/docs/reference/bigquery/latest/google.cloud.bigquery.client.Client
-client = bigquery.Client()
-
-query = """
-    SELECT *
-    FROM `bigquery-public-data.crypto_bitcoin.transactions`
-    WHERE
-        EXTRACT(YEAR FROM block_timestamp) = 2022 AND
-        EXTRACT(MONTH FROM block_timestamp) = 10 
-        ORDER BY `hash`
-    LIMIT 10000   
+def query_execution(query : str, big_query_client : bigquery.client.Client, csv_file_name : str) -> None :
     """
-
-
-estimate = estimate_gigabytes_scanned(query, client)
-print(f"Cette requete traitera {estimate} GBs.")
-
-bytes_in_gigabytes = 2**30
-
-safe_config = bigquery.QueryJobConfig( maximum_bytes_billed= int(estimate + 10) * bytes_in_gigabytes )
-
-query_job = client.query(query, job_config=safe_config)
-start = time()
-result = query_job.result()
-df = result.to_dataframe()
-duration = (time() - start) / 60
-
-print(f"Temps ecoule : {duration:.2f} minutes")
-
-print( df.head() )
-df.to_csv('transactions_202210.csv', index=False)
-
-
-query = """
-    SELECT *
-    FROM `bigquery-public-data.crypto_bitcoin.blocks`
-    WHERE
-        `hash` IN (SELECT block_hash
-                 FROM `bigquery-public-data.crypto_bitcoin.transactions`
-                 WHERE
-                 EXTRACT(YEAR FROM block_timestamp) = 2022 AND
-                 EXTRACT(MONTH FROM block_timestamp) = 10 
-                 ORDER BY `hash`
-                 LIMIT 10000)
+    Une fonction qui recoit une requete et cree un fichier csv avec les donnees demandees.
     """
+    estimate = estimate_gigabytes_scanned(query, big_query_client)
+    print(f"Cette requete traitera {estimate} GBs.")
 
-estimate = estimate_gigabytes_scanned(query, client)
-print(f"Cette requete traitera {estimate} GBs.")
+    bytes_in_gigabytes = 2**30
+    safe_config = bigquery.QueryJobConfig( maximum_bytes_billed= int(estimate + 10) * bytes_in_gigabytes )
 
-bytes_in_gigabytes = 2**30
+    query_job = client.query(query, job_config=safe_config)
+    start = time()
 
-safe_config = bigquery.QueryJobConfig( maximum_bytes_billed= int(estimate + 10) * bytes_in_gigabytes )
+    result = query_job.result()
+    data_frame = result.to_dataframe()
 
-query_job = client.query(query, job_config=safe_config)
-start = time()
-result = query_job.result()
-df = result.to_dataframe()
-duration = (time() - start) / 60
+    duration = (time() - start) / 60
+    print(f"Temps ecoule : {duration:.2f} minutes")
 
-print(f"Temps ecoule : {duration:.2f} minutes")
+    print( data_frame.head() )
+    data_frame.to_csv(csv_file_name, index=False)
 
-print( df.head() )
-df.to_csv('blocks_202210.csv', index=False)
+
+if __name__ == '__main__' :
+    # Description de l'API : https://cloud.google.com/python/docs/reference/bigquery/latest/google.cloud.bigquery.client.Client
+    client = bigquery.Client()
+
+    common_part_for_all_queries = 'FROM `bigquery-public-data.crypto_bitcoin.transactions` '\
+                                   'WHERE '\
+                                   'EXTRACT(YEAR FROM block_timestamp) = 2022 AND '\
+                                   'EXTRACT(MONTH FROM block_timestamp) = 10 '\
+                                   'ORDER BY `hash` '\
+                                   'LIMIT 10000'   
+ 
+
+    query_1 = 'SELECT `hash`,size,virtual_size,version,lock_time,block_hash,'\
+            'block_number,block_timestamp,block_timestamp_month,input_count,output_count,'\
+            'input_value,output_value,is_coinbase,fee ' + common_part_for_all_queries
+
+    query_execution(query_1, client, 'transactions_202210.csv')
+
+
+    query_2 = 'SELECT * '\
+            'FROM `bigquery-public-data.crypto_bitcoin.blocks` '\
+            'WHERE '\
+            '`hash` IN (SELECT block_hash ' + common_part_for_all_queries + ') '
+
+    query_execution(query_2, client, 'blocks_202210.csv')
+
+    query_3 = 'SELECT * '\
+            'FROM `bigquery-public-data.crypto_bitcoin.inputs` '\
+            'WHERE '\
+            'transaction_hash IN (SELECT `hash` ' + common_part_for_all_queries + ') '
+
+    query_execution(query_3, client, 'inputs_202210.csv')
+
+    query_4 = 'SELECT * '\
+            'FROM `bigquery-public-data.crypto_bitcoin.outputs` '\
+            'WHERE '\
+            'transaction_hash IN (SELECT `hash` ' + common_part_for_all_queries + ') '
+
+    query_execution(query_4, client, 'outputs_202210.csv')
