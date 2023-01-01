@@ -66,3 +66,5 @@ CREATE (transaction)-[:out]->(output)
 // nous utilisons donc la fonction split(original, splitDelimiter) pour extraire l'adresse elle-même du tableau
 CREATE (address :Address {address: split(outputs_csv.addresses, "'")[1]}) 
 CREATE (output)-[:locked]->(address)
+
+
