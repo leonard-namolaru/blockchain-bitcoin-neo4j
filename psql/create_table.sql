@@ -43,7 +43,7 @@ CREATE TABLE input (
     block_number INT,
     block_timestamp TIMESTAMP,
     index INT,
-    spent_transaction_hash CHAR(64) REFERENCES transaction(hash),
+    spent_transaction_hash CHAR(64),
     spent_output_index INT,
     script_asm TEXT,
     script_hex TEXT,
@@ -56,7 +56,7 @@ CREATE TABLE input (
 
 CREATE TABLE output (
     transaction_hash CHAR(64) REFERENCES transaction(hash),
-    block_hash CHAR(64) REFERENCES block(hash),
+    block_hash CHAR(64),
     block_number INT,
     block_timestamp TIMESTAMP,
     index INT,
