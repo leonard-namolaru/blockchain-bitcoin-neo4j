@@ -13,9 +13,6 @@
 #### Description
 Le but de ce projet est de démontrer comment implémenter une base de données graphe avec un jeu de données de notre choix. Le jeu de données choisi est « Bitcoin Blockchain Historical Data » : données historiques complètes de la Blockchain Bitcoin.
 
-**Remarque :** L'objectif principal de ce projet était de s'initier à Neo4j, et le choix du sujet a été fait malgré mon peu de compréhension des termes liés au Bitcoin lui-même. Il est donc possible que l’utilisation et l’interprétation de certains termes liés au Bitcoin soient inexactes. Cependant, je trouve le projet intéressant car il montre la puissance et l’intérêt d’utiliser une base de données graphe pour l'analyse des données historiques de la Blockchain Bitcoin.
-
-
 #### Travail effectué
 - Extraction des données depuis Google BigQuery.
 
@@ -33,3 +30,7 @@ Le but de ce projet est de démontrer comment implémenter une base de données 
 
 #### Ressources supplémentaires
 - [Rapport](Rapport_FR.pdf)
+
+#### Remarque
+L'objectif principal de ce projet était de s'initier à Neo4j, et le choix du sujet a été fait malgré mon peu de compréhension des termes liés au Bitcoin lui-même. Il est donc possible que l’utilisation et l’interprétation de certains termes liés au Bitcoin soient inexactes. Cependant, je trouve le projet intéressant car il montre la puissance et l’intérêt d’utiliser une base de données graphe pour l'analyse des données historiques de la Blockchain Bitcoin.
+
