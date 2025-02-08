@@ -11,7 +11,7 @@
 > :chart_with_upwards_trend: **Note :** ~16/20
 
 #### Description
-Le but de ce projet est de démontrer comment implémenter une base de données graphe avec un jeu de données de notre choix. Le jeu de données choisi est « Bitcoin Blockchain Historical Data » : données historiques complètes de la Blockchain Bitcoin.
+Le but de ce projet est de démontrer comment implémenter une base de données graphe avec un jeu de données de notre choix. Le jeu de données choisi est [Bitcoin Blockchain Historical Data](https://www.kaggle.com/datasets/bigquery/bitcoin-blockchain) : données historiques complètes de la Blockchain Bitcoin.
 
 #### Travail effectué
 - Extraction des données depuis Google BigQuery.
