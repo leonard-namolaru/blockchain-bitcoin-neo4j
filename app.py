@@ -26,7 +26,7 @@ class DonneesHistoriquesBlockchainBitcoin(object) :
 if __name__ == "__main__":
     uri = "bolt://localhost:7687"
     utilisateur = "neo4j"
-    mdp = "lmirceas"
+    mdp = "..."
 
     donneesHistoriquesBlockchainBitcoin = DonneesHistoriquesBlockchainBitcoin(uri, utilisateur, mdp)
     donneesHistoriquesBlockchainBitcoin.print_end_addresses("bc1qhekuaxsq7ps2w7fzw9qwun2x2yacsd6ev4csf6")
