@@ -1,5 +1,7 @@
-### Implémentation d’une BD graphe dans Neo4j - Données historiques de la blockchain Bitcoin
 ![neo4j-project-img.png](neo4j-project-img.png)
+[Français](#français-implémentation-dune-bd-graphe-dans-neo4j---données-historiques-de-la-blockchain-bitcoin) • [English](#english-neo4j-graph-database---bitcoin-blockchain-historical-data)  • [עברית](#עברית-neo4j--שימוש-במסד-נתונים-גרפי-עבור-הצגת-נתונים-היסטוריים-של-הבלוקציין-ביטקוין)
+
+### [Français] Implémentation d’une BD graphe dans Neo4j - Données historiques de la blockchain Bitcoin
 > :school: **Lieu de formation :** Université Paris Cité, Campus Grands Moulins (ex-Paris Diderot)
 > 
 > :books: **UE :** Base de données spécialisées 
@@ -34,3 +36,5 @@ Le but de ce projet est de démontrer comment implémenter une base de données 
 #### Remarque
 L'objectif principal de ce projet était de s'initier à Neo4j, et le choix du sujet a été fait malgré mon peu de compréhension des termes liés au Bitcoin lui-même. Il est donc possible que l’utilisation et l’interprétation de certains termes liés au Bitcoin soient inexactes. Cependant, je trouve le projet intéressant car il montre la puissance et l’intérêt d’utiliser une base de données graphe pour l'analyse des données historiques de la Blockchain Bitcoin.
 
+### [English] Neo4j graph database - Bitcoin Blockchain Historical Data
+### [עברית] Neo4j : שימוש במסד נתונים גרפי עבור הצגת נתונים היסטוריים של הבלוקצ׳יין ביטקוין
