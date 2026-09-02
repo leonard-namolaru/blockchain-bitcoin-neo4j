@@ -1,4 +1,4 @@
-![neo4j-project-img.png](neo4j-project-img.png)
+![readme-header.png](readme-header.png)
 [Français](#français-implémentation-dune-bd-graphe-dans-neo4j---données-historiques-de-la-blockchain-bitcoin) • [English](#english-neo4j-graph-database---bitcoin-blockchain-historical-data)  • [עברית](#עברית-neo4j--שימוש-במסד-נתונים-גרפי-עבור-הצגת-נתונים-היסטוריים-של-הבלוקציין-ביטקוין)
 
 ### [Français] Implémentation d’une BD graphe dans Neo4j - Données historiques de la blockchain Bitcoin
